@@ -1,0 +1,29 @@
+{
+  "name": "@bengawalk/elections-2023",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:bengawalk/elections-2023.git",
+  "author": "Deep <deep@euclidxr.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "vite serve src --mode development --host 0.0.0.0 --port 3000 --config vite.config.js",
+    "build": "vite build src --config vite.config.js",
+    "preview": "vite preview",
+    "publish": "gh-pages -d dist",
+    "prettier": "prettier --write src"
+  },
+  "dependencies": {
+    "@material-design-icons/font": "^0.14.6",
+    "@rollup/plugin-dsv": "^3.0.2",
+    "geolib": "^3.3.3",
+    "gh-pages": "^4.0.0",
+    "mapbox-gl": "^2.14.1",
+    "prettier": "^2.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "robust-orientation": "1.0.2",
+    "sass": "^1.55.0",
+    "vite": "^3.1.0",
+    "vite-plugin-pwa": "^0.14.0"
+  }
+}
