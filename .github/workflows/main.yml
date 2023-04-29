@@ -1,4 +1,4 @@
-name: Workflow for build and deploy for visualizations repo
+name: Workflow for build and deploy for elections 2023 repo
 on:
   push:
     branches:

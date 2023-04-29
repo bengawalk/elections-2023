@@ -269,11 +269,15 @@ class MainPage extends React.PureComponent {
       <>
         <div id="constituency-map-wrapper">
           <div id="constituency-map" className="mapboxgl-map" ref={this.mapContainer} />
-          <button id="map-get-location" onClick={this.getUserLocation}>
-            <span className="material-icons">
-              my_location
-              </span>
-          </button>
+          {
+            constituency && (
+              <button id="map-get-location" onClick={this.getUserLocation}>
+                <span className="material-icons">
+                  my_location
+                </span>
+              </button>
+            )
+          }
         </div>
         <div id="content">
           {
