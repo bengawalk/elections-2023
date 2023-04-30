@@ -4,9 +4,14 @@ import mapboxgl from "mapbox-gl";
 import { getBounds } from "geolib";
 
 import ElectionDataRaw from "./assets/data.csv?raw";
-import {MAPBOX_TOKEN} from "./utils/constants";
+import {LANGUAGES, MAPBOX_TOKEN} from "./utils/constants";
 import boundaryData from "./assets/constituencies.json";
 import {isPointInPolygon} from "./utils";
+import Content from "./content";
+import {Trans, withTranslation} from "react-i18next";
+import i18n from "i18next";
+
+import "./utils/i18n";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -14,99 +19,13 @@ const [headersString, ...dataStringArray] = ElectionDataRaw.split("\r\n");
 const headers = headersString.split(",");
 const ELECTION_DATA = [];
 dataStringArray.forEach(d => {
-  const dataItemArray = d.split(",");
+  const dataItemArray = d.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
   const dataItem = {};
   headers.forEach((h, i) => {
     dataItem[h] = dataItemArray[i];
   });
   ELECTION_DATA.push(dataItem);
 });
-
-const Content = ({ details }) => {
-  return (
-    <>
-      <h2>About</h2>
-      <h4>
-        Voting population
-      </h4>
-      <p>{parseInt(details.pop.substring(0, 3)) / 100} lakh</p>
-      <h4>Area</h4>
-      <p>{details.area} sqkm</p>
-
-      <h2>Sitting MLA, {details.elec_year} - 2023</h2>
-      <h4>Name</h4>
-      <div className="flex">
-        <div className="member-icon"></div>
-        {details.mla_en}
-      </div>
-
-      <h4>Party</h4>
-      <div className="flex">
-        <div className="member-icon"></div>
-        {details.mla_party}
-      </div>
-
-      <h4>In the news</h4>
-      TODO
-      {/*<a className="news-item">*/}
-      {/*  White topping delays continue across Indiranagar and Ulsoor*/}
-      {/*  <span className="material-icons">*/}
-      {/*      open_in_new*/}
-      {/*      </span>*/}
-      {/*</a>*/}
-      {/*<a className="news-item">*/}
-      {/*  Man gets beaten up for overtaking MLA*/}
-      {/*  <span className="material-icons">*/}
-      {/*      open_in_new*/}
-      {/*      </span>*/}
-      {/*</a>*/}
-      {/*<a className="news-item">*/}
-      {/*  Despite ban, politicians continue to spend taxpayer money on flex ads*/}
-      {/*  <span className="material-icons">*/}
-      {/*      open_in_new*/}
-      {/*      </span>*/}
-      {/*</a>*/}
-
-      <h2>2023 Candidates</h2>
-      <table className="candidates-table">
-        <thead>
-        <tr>
-          <th>
-            <h4>Name</h4>
-          </th>
-          <th>
-            <h4>Party</h4>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>
-            <div className="flex">
-              <div className="member-icon"></div>
-              Candidate 1
-            </div>
-          </td>
-          <td>
-            <div className="member-icon"></div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div className="flex">
-              <div className="member-icon"></div>
-              Candidate 2
-            </div>
-          </td>
-          <td>
-            <div className="member-icon"></div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </>
-  );
-}
 
 class MainPage extends React.PureComponent {
   constructor(props) {
@@ -118,6 +37,7 @@ class MainPage extends React.PureComponent {
       lng: 77.5896,
       locationError: false,
       locationProgress: false,
+      lang: "en",
     };
     this.mapContainer = React.createRef();
   }
@@ -125,11 +45,16 @@ class MainPage extends React.PureComponent {
   componentDidMount() {
     const { lat, lng, zoom } = this.state;
 
+    const lang = localStorage.getItem("lang") || LANGUAGES[0].code
+    i18n.changeLanguage(lang);
+    this.setState({ lang });
+
     const mapRef = new mapboxgl.Map({
       container: this.mapContainer.current,
       style: "mapbox://styles/mapbox/light-v11",
       center: [lng, lat],
       zoom,
+      minZoom: 8,
     });
 
     mapRef.dragRotate.disable();
@@ -189,7 +114,11 @@ class MainPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { constituency } = this.state;
+    const { constituency, lang } = this.state;
+    // const url = new URL(window.location.href);
+    // url.searchParams.set('c', constituency);
+    // window.history.replaceState( {} , '', url );
+
     if(constituency !== prevState.constituency) {
       this.map.setFilter("boundaries-highlighted", [
         "==",
@@ -197,13 +126,25 @@ class MainPage extends React.PureComponent {
         constituency || "",
       ]);
 
-      const constituencyData = boundaryData.features.find(f => f.properties.AC_CODE === constituency);
+      const constituencyData = boundaryData.features.filter(f => f.properties.AC_CODE === constituency);
+      let coordinates = [];
+      constituencyData.forEach(c => {
+        c.geometry.coordinates[0].forEach(([longitude, latitude]) => {
+          coordinates.push({ longitude, latitude });
+        })
+      });
 
-      const bounds = getBounds(constituencyData.geometry.coordinates[0].map(([longitude, latitude]) => ({ longitude, latitude })));
+      const bounds = getBounds(coordinates);
       this.map.fitBounds([
         [bounds.minLng - 0.014, bounds.minLat - 0.014],
         [bounds.maxLng + 0.014, bounds.maxLat + 0.014]
       ])
+    }
+
+    if(lang !== prevState.lang) {
+      localStorage.setItem("lang", lang);
+      document.documentElement.setAttribute("lang", lang);
+      i18n.changeLanguage(lang);
     }
   }
 
@@ -224,6 +165,15 @@ class MainPage extends React.PureComponent {
         constituency: AC_CODE,
       });
     });
+
+    this.map.on('mousemove', 'boundaries-fill', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', 'boundaries-fill', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
+
   }
 
   getUserLocation = () => {
@@ -262,58 +212,87 @@ class MainPage extends React.PureComponent {
     );
   }
 
+  switchLanguage = () => {
+    const { lang } = this.state;
+    this.setState({
+      lang: lang === 'en' ? "kn" : "en",
+    });
+  }
+
   render() {
-    const { constituency, locationError, locationProgress } = this.state;
-    const selectedConstituencyDetails = ELECTION_DATA.find(e => e.code === constituency);
+    const { t } = this.props;
+    const { constituency, locationError, locationProgress, lang } = this.state;
+    const selectedConstituencyDetails = ELECTION_DATA.filter(e => e.code === constituency);
+
     return (
       <>
         <div id="constituency-map-wrapper">
           <div id="constituency-map" className="mapboxgl-map" ref={this.mapContainer} />
-          {
-            constituency && (
-              <button id="map-get-location" onClick={this.getUserLocation}>
+          <div id="map-actions">
+            <button id="map-get-location" onClick={this.getUserLocation}>
                 <span className="material-icons">
                   my_location
                 </span>
-              </button>
-            )
-          }
+            </button>
+            <button id="language-switch" onClick={this.switchLanguage}>
+              { lang === 'en' ? "ಕನ್ನಡ" : "EN" }
+            </button>
+          </div>
         </div>
         <div id="content">
           {
             locationError && (
-              <p className="error">Unable to get current location. Please try again</p>
+              <div id="location-error">
+                <span className="material-icons">
+                  location_disabled
+                </span>
+                <p>
+                  <Trans t={t} i18nKey="loc_err" />
+                </p>
+              </div>
             )
           }
           {
             locationProgress && (
-              <div className="center">
-                Fetching location...
+              <div id="search-loading">
+                <div className="spin" />
+                <Trans t={t} i18nKey="loc_fetch" />...
               </div>
             )
           }
-          <h4>Assembly constituency</h4>
+          <h2>{t('mla_elec')} 2023</h2>
+          <h4><Trans t={t} i18nKey="acb" /></h4>
           <select value={constituency} className="assembly-dropdown" onChange={e => { this.setState({ constituency: e.target.value })}}>
             {
-              constituency ? "" : <option>Select assembly constituency</option>
+              constituency ? "" : <option>
+                <Trans t={t} i18nKey="sac" />
+              </option>
             }
             {
               ELECTION_DATA.map(e => (
-                <option value={e.code} key={e.code}>{e.name_en}</option>
+                <option value={e.code} key={e.code}>{e[`name_${lang}`]}</option>
               ))
             }
           </select>
           {
-            selectedConstituencyDetails && (
-              <Content details={selectedConstituencyDetails} />
+            selectedConstituencyDetails.length > 0 && (
+              <Content
+                constituency={constituency}
+                details={selectedConstituencyDetails[0]}
+                lang={lang}
+              />
             )
           }
           {
-            !selectedConstituencyDetails && !locationProgress && (
+            !selectedConstituencyDetails.length > 0  && !locationProgress && (
               <div className="center">
-                or
+                <Trans t={t} i18nKey="or" />
                 <br />
-                <button id="location-button" onClick={this.getUserLocation}>Get current location</button>
+                <button id="location-button" onClick={this.getUserLocation}>
+                  <span className="material-icons">
+                    my_location
+                  </span>
+                  <Trans t={t} i18nKey="gcl" /></button>
               </div>
             )
           }
@@ -323,5 +302,7 @@ class MainPage extends React.PureComponent {
   }
 }
 
+const TranslatedPage = withTranslation()(MainPage);
+
 const root = createRoot(document.getElementById("root"));
-root.render(<MainPage />);
+root.render(<TranslatedPage />);
