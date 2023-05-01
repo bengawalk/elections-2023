@@ -9,9 +9,10 @@ const enTranslations = {
   news: "In the news",
   loc_err: "Unable to get current location. Please try again",
   loc_fetch: "Fetching current location",
-  inc: "Indian National Congress",
-  bjp: "Bharatiya Janata Party",
-  jds: "Janata Dal (Secular)",
+  inc: "Congress",
+  bjp: "BJP",
+  jds: "JDS",
+  aap: "AAP",
 };
 
 export default enTranslations;

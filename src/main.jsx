@@ -3,10 +3,16 @@ import { createRoot } from "react-dom/client";
 import mapboxgl from "mapbox-gl";
 import { getBounds } from "geolib";
 
+// import {
+//   ElectionDataRaw,
+//   CandidatesDataRaw
+// } from "./assets/data";
+
 import ElectionDataRaw from "./assets/data.csv?raw";
+import CandidatesDataRaw from "./assets/candidates.csv?raw";
 import {LANGUAGES, MAPBOX_TOKEN} from "./utils/constants";
 import boundaryData from "./assets/constituencies.json";
-import {isPointInPolygon} from "./utils";
+import {csvToJson, isPointInPolygon} from "./utils";
 import Content from "./content";
 import {Trans, withTranslation} from "react-i18next";
 import i18n from "i18next";
@@ -15,17 +21,8 @@ import "./utils/i18n";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-const [headersString, ...dataStringArray] = ElectionDataRaw.split("\r\n");
-const headers = headersString.split(",");
-const ELECTION_DATA = [];
-dataStringArray.forEach(d => {
-  const dataItemArray = d.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-  const dataItem = {};
-  headers.forEach((h, i) => {
-    dataItem[h] = dataItemArray[i];
-  });
-  ELECTION_DATA.push(dataItem);
-});
+const ELECTION_DATA = csvToJson(ElectionDataRaw);
+const CANDIDATES_DATA = csvToJson(CandidatesDataRaw);
 
 class MainPage extends React.PureComponent {
   constructor(props) {
@@ -223,6 +220,7 @@ class MainPage extends React.PureComponent {
     const { t } = this.props;
     const { constituency, locationError, locationProgress, lang } = this.state;
     const selectedConstituencyDetails = ELECTION_DATA.filter(e => e.code === constituency);
+    const candidateDetails = CANDIDATES_DATA.filter(e => e.code === constituency);
 
     return (
       <>
@@ -264,7 +262,7 @@ class MainPage extends React.PureComponent {
           <h4><Trans t={t} i18nKey="acb" /></h4>
           <select value={constituency} className="assembly-dropdown" onChange={e => { this.setState({ constituency: e.target.value })}}>
             {
-              constituency ? "" : <option>
+              constituency ? "" : <option value="">
                 <Trans t={t} i18nKey="sac" />
               </option>
             }
@@ -279,6 +277,7 @@ class MainPage extends React.PureComponent {
               <Content
                 constituency={constituency}
                 details={selectedConstituencyDetails[0]}
+                candidateDetails={candidateDetails}
                 lang={lang}
               />
             )

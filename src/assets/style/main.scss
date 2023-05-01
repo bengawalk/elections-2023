@@ -32,6 +32,9 @@ html {
 
 .flex {
   display: flex;
+  &.ac {
+    align-items: center;
+  }
 }
 
 .align-center {

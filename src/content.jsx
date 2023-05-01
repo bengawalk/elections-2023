@@ -1,17 +1,9 @@
 import * as React from "react";
+import { map as lmap, sortBy as lsortBy } from "lodash";
 import {Trans, withTranslation} from "react-i18next";
+import {PARTY_ICONS} from "./utils";
 
-import IconBjp from "./assets/images/icon_bjp.webp";
-import IconCongress from "./assets/images/icon_congress.webp";
-import IconJds from "./assets/images/icon_jds.webp";
-
-const PARTY_ICONS = {
-  bjp: IconBjp,
-  inc: IconCongress,
-  jds: IconJds,
-};
-
-const Content = ({ constituency, details, lang, t }) => {
+const Content = ({ constituency, details, candidateDetails, lang, t }) => {
   return (
     <>
       <h2>
@@ -67,28 +59,24 @@ const Content = ({ constituency, details, lang, t }) => {
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>
-            <div className="flex">
-              <div className="member-icon"></div>
-              Candidate 1
-            </div>
-          </td>
-          <td>
-            <div className="member-icon"></div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div className="flex">
-              <div className="member-icon"></div>
-              Candidate 2
-            </div>
-          </td>
-          <td>
-            <div className="member-icon"></div>
-          </td>
-        </tr>
+        {
+          lmap(lsortBy(candidateDetails, `name_${lang}`), (item) => (
+            <tr key={item[`name_${lang}`]}>
+              <td>
+                <div className="flex ac">
+                  <img className="member-icon" src={`https://suvidha.eci.gov.in/uploads1/candprofile/E20/2023/AC/${item.image}.jpg`} alt="" />
+                  {item[`name_${lang}`]}
+                </div>
+              </td>
+              <td>
+                <div className="flex ac">
+                  <img className="member-icon" src={PARTY_ICONS[item.party]} alt="" />
+                  <Trans t={t} i18nKey={item.party} />
+                </div>
+              </td>
+            </tr>
+          ))
+        }
         </tbody>
       </table>
     </>
