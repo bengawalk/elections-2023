@@ -182,7 +182,7 @@ class MainPage extends React.PureComponent {
   getUserLocation = () => {
     this.setState({
       locationProgress: true,
-    })
+    });
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -278,7 +278,7 @@ class MainPage extends React.PureComponent {
           }
           <h2>{t('mla_elec')} 2023</h2>
           <h4><Trans t={t} i18nKey="acb" /></h4>
-          <select value={constituency} className="assembly-dropdown" onChange={e => { this.setState({ constituency: e.target.value })}}>
+          <select value={constituency} className="assembly-dropdown" onChange={e => { this.setState({ locationError: false, constituency: e.target.value })}}>
             {
               constituency ? "" : <option value="">
                 <Trans t={t} i18nKey="sac" />
