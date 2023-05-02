@@ -35,7 +35,7 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
           const link = details[`news_${index}_link`];
           if(link) {
             return (
-              <a className="news-item" href={link} target="_blank">
+              <a className="news-item" key={link} href={link} target="_blank">
                 {(details[`news_${index}`] || "").replaceAll("\"", "")}
                 <span className="material-icons">
                   open_in_new
