@@ -18,25 +18,25 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
 
       <h2><Trans t={t} i18nKey="smla" />, {details.elec_year} - 2023</h2>
       <h4><Trans t={t} i18nKey="Name" /></h4>
-      <div className="flex">
+      <div className="flex member">
         <img className="member-icon" src={`/mla/${constituency}.webp`} alt="" />
         {details[`mla_${lang}`]}
       </div>
 
       <h4><Trans t={t} i18nKey="party" /></h4>
-      <div className="flex">
+      <div className="flex member">
         <img className="member-icon" src={PARTY_ICONS[details.mla_party]} alt="" />
         <Trans t={t} i18nKey={details.mla_party} />
       </div>
 
       <h4><Trans t={t} i18nKey="news" /></h4>
       {
-        [1, 2, 3, 4].map(index => {
+        [1, 2, 3, 4, 5, 6].map(index => {
           const link = details[`news_${index}_link`];
           if(link) {
             return (
               <a className="news-item" href={link} target="_blank">
-                {details[`news_${index}_${lang}`].replaceAll("\"", "")}
+                {(details[`news_${index}`] || "").replaceAll("\"", "")}
                 <span className="material-icons">
                   open_in_new
                 </span>
@@ -63,13 +63,13 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
           lmap(lsortBy(candidateDetails, `name_${lang}`), (item) => (
             <tr key={item[`name_${lang}`]}>
               <td>
-                <div className="flex ac">
+                <div className="flex ac member">
                   <img className="member-icon" src={`https://suvidha.eci.gov.in/uploads1/candprofile/E20/2023/AC/${item.image}.jpg`} alt="" />
                   {item[`name_${lang}`]}
                 </div>
               </td>
               <td>
-                <div className="flex ac">
+                <div className="flex ac member">
                   <img className="member-icon" src={PARTY_ICONS[item.party]} alt="" />
                   <Trans t={t} i18nKey={item.party} />
                 </div>
@@ -79,6 +79,47 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
         }
         </tbody>
       </table>
+      <h2>
+        <Trans t={t} i18nKey="cn" />
+      </h2>
+      <div className="cons-news">
+        <a className="news-item" href={details.cm_article} target="_blank">
+          Citizen matters voter guide
+          <span className="material-icons">
+            open_in_new
+          </span>
+        </a>
+      </div>
+      <h2>
+        <Trans t={t} i18nKey="wv" />
+      </h2>
+      <div className="cons-news">
+        <a className="news-item" href="https://electoralsearch.eci.gov.in/" target="_blank">
+          <Trans t={t} i18nKey="voter_search" />
+          <span className="material-icons">
+            open_in_new
+          </span>
+        </a>
+      </div>
+      <h2>
+        <Trans t={t} i18nKey="scs" />
+      </h2>
+      <div className="cons-news">
+        <a className="news-item" href="https://data.opencity.in/dataset/karnataka-assembly-elections-2023" target="_blank">
+          <Trans t={t} i18nKey="opencity" />
+          <span className="material-icons">
+            open_in_new
+          </span>
+        </a>
+
+        <a className="news-item" href="https://affidavit.eci.gov.in/" target="_blank">
+          <Trans t={t} i18nKey="eci" />
+          <span className="material-icons">
+            open_in_new
+          </span>
+        </a>
+      </div>
+
     </>
   );
 }

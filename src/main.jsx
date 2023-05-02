@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import mapboxgl from "mapbox-gl";
+import { sortBy as lsortBy } from "lodash";
 import { getBounds } from "geolib";
 
 // import {
@@ -131,11 +132,11 @@ class MainPage extends React.PureComponent {
         })
       });
 
-      const bounds = getBounds(coordinates);
-      this.map.fitBounds([
-        [bounds.minLng - 0.014, bounds.minLat - 0.014],
-        [bounds.maxLng + 0.014, bounds.maxLat + 0.014]
-      ])
+      // const bounds = getBounds(coordinates);
+      // this.map.fitBounds([
+      //   [bounds.minLng - 0.014, bounds.minLat - 0.014],
+      //   [bounds.maxLng + 0.014, bounds.maxLat + 0.014]
+      // ])
     }
 
     if(lang !== prevState.lang) {
@@ -267,7 +268,7 @@ class MainPage extends React.PureComponent {
               </option>
             }
             {
-              ELECTION_DATA.map(e => (
+              lsortBy(ELECTION_DATA, `name_${lang}`).map(e => (
                 <option value={e.code} key={e.code}>{e[`name_${lang}`]}</option>
               ))
             }
