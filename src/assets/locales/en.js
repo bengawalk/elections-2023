@@ -9,6 +9,7 @@ const enTranslations = {
   news: "In the news",
   loc_err: "Unable to get current location. Please try again",
   loc_fetch: "Fetching current location",
+  loc_out: "Your location seems to be outside Bengaluru. Please select the constituency from the dropdown",
   inc: "Congress",
   bjp: "BJP",
   jds: "JDS",

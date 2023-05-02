@@ -25,6 +25,11 @@ mapboxgl.accessToken = MAPBOX_TOKEN;
 const ELECTION_DATA = csvToJson(ElectionDataRaw);
 const CANDIDATES_DATA = csvToJson(CandidatesDataRaw);
 
+const LOCATION_ERRORS = {
+  UNAVAILABLE: "UNAVAILABLE",
+  OUTSIDE: "OUTSIDE",
+};
+
 class MainPage extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -196,14 +201,14 @@ class MainPage extends React.PureComponent {
           });
         } else {
           this.setState({
-            locationError: true,
+            locationError: LOCATION_ERRORS.OUTSIDE,
             locationProgress: false,
           });
         }
       },
       (error) => {
         this.setState({
-          locationError: true,
+          locationError: LOCATION_ERRORS.UNAVAILABLE,
           locationProgress: false,
         });
       },
@@ -240,13 +245,25 @@ class MainPage extends React.PureComponent {
         </div>
         <div id="content">
           {
-            locationError && (
+            locationError === LOCATION_ERRORS.UNAVAILABLE && (
               <div id="location-error">
                 <span className="material-icons">
                   location_disabled
                 </span>
                 <p>
                   <Trans t={t} i18nKey="loc_err" />
+                </p>
+              </div>
+            )
+          }
+          {
+            locationError === LOCATION_ERRORS.OUTSIDE && (
+              <div id="location-error">
+                <span className="material-icons">
+                  near_me_disabled
+                </span>
+                <p>
+                  <Trans t={t} i18nKey="loc_out" />
                 </p>
               </div>
             )
