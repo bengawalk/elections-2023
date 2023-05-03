@@ -91,7 +91,7 @@ class MainPage extends React.PureComponent {
       type: "fill",
       filter: ["!=", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#FFF000",
+        "fill-color": "#dc1d30",
         "fill-opacity": 0.3,
       },
     });
@@ -102,7 +102,7 @@ class MainPage extends React.PureComponent {
       type: "fill",
       filter: ["==", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#FFAA00",
+        "fill-color": "#dc1d30",
         "fill-opacity": 0.7,
       },
     });
