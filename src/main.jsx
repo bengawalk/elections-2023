@@ -1,13 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import mapboxgl from "mapbox-gl";
-import { sortBy as lsortBy } from "lodash";
-import { getBounds } from "geolib";
-
-// import {
-//   ElectionDataRaw,
-//   CandidatesDataRaw
-// } from "./assets/data";
+import { sortBy as lsortBy, map as lMap } from "lodash";
 
 import ElectionDataRaw from "./assets/data.csv?raw";
 import CandidatesDataRaw from "./assets/candidates.csv?raw";
@@ -29,6 +23,17 @@ const LOCATION_ERRORS = {
   UNAVAILABLE: "UNAVAILABLE",
   OUTSIDE: "OUTSIDE",
 };
+
+const PARTY_COLORS = {
+  inc: "#01bfff",
+  jds: "#128709",
+  bjp: "#ff9933",
+};
+
+const getConstituencyColor = (code) => {
+  const constituencyDetails = ELECTION_DATA.find(e => e.code === code);
+  return PARTY_COLORS[constituencyDetails.mla_party];
+}
 
 class MainPage extends React.PureComponent {
   constructor(props) {
@@ -80,9 +85,23 @@ class MainPage extends React.PureComponent {
 
   renderMapData = () => {
     const { constituency } = this.state;
+
+    const boundaryDataWithColor = {
+      ...boundaryData,
+      features: lMap(boundaryData.features, f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          color: getConstituencyColor(f.properties.AC_CODE),
+        }
+      }))
+    };
+
+    console.log(boundaryDataWithColor);
+
     this.map.addSource("boundaries", {
       type: "geojson",
-      data: boundaryData,
+      data: boundaryDataWithColor,
     });
 
     this.map.addLayer({
@@ -91,7 +110,7 @@ class MainPage extends React.PureComponent {
       type: "fill",
       filter: ["!=", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#dc1d30",
+        "fill-color": ["get", "color"],
         "fill-opacity": 0.3,
       },
     });
@@ -102,7 +121,7 @@ class MainPage extends React.PureComponent {
       type: "fill",
       filter: ["==", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#dc1d30",
+        "fill-color": ["get", "color"],
         "fill-opacity": 0.7,
       },
     });

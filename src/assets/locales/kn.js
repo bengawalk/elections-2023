@@ -28,7 +28,7 @@ const knTranslations = {
   "2018": "೨೦೧೮",
   "2019": "೨೦೧೯",
   "2023": "೨೦೨೩",
-  ai: "ಹೆಚ್ಚುವರಿ ಮಾಹಿತಿ",
+  ai: "ಇತರೆ ಮಾಹಿತಿ",
 };
 
 export default knTranslations;
