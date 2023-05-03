@@ -19,7 +19,7 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
       <h2><Trans t={t} i18nKey="smla" />, <Trans t={t} i18nKey={details.elec_year} /> - <Trans t={t} i18nKey="2023" /></h2>
       <h4><Trans t={t} i18nKey="Name" /></h4>
       <div className="flex ac member">
-        <img className="member-icon" src={`/mla/${constituency}.webp`} alt="" />
+        <img className="member-icon" src={details.mla_image ? `https://suvidha.eci.gov.in/uploads1/candprofile/E20/2023/AC/${details.mla_image}.jpg` : `/mla/${constituency}.webp`} alt="" />
         {details[`mla_${lang}`]}
       </div>
 
