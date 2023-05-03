@@ -46,6 +46,8 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
           return null;
         })
       }
+
+      {/*Candidates section*/}
       <h2><Trans t={t} i18nKey="2023" /> <Trans t={t} i18nKey="Candidates" /></h2>
       <table className="candidates-table">
         <thead>
@@ -79,21 +81,18 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
         }
         </tbody>
       </table>
+
+      {/*Additional information*/}
       <h2>
-        <Trans t={t} i18nKey="cn" />
+        <Trans t={t} i18nKey="ai" />
       </h2>
       <div className="cons-news">
         <a className="news-item" href={details.cm_article} target="_blank">
-          Citizen matters voter guide
+          <Trans t={t} i18nKey="cm" />
           <span className="material-icons">
             open_in_new
           </span>
         </a>
-      </div>
-      <h2>
-        <Trans t={t} i18nKey="wv" />
-      </h2>
-      <div className="cons-news">
         <a className="news-item" href="https://electoralsearch.eci.gov.in/" target="_blank">
           <Trans t={t} i18nKey="voter_search" />
           <span className="material-icons">
@@ -101,19 +100,20 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
           </span>
         </a>
       </div>
+
       <h2>
         <Trans t={t} i18nKey="scs" />
       </h2>
       <div className="cons-news">
         <a className="news-item" href="https://data.opencity.in/dataset/karnataka-assembly-elections-2023" target="_blank">
-          OpenCity portal for population data
+          2023 voter population by assembly constituencies, Open City
           <span className="material-icons">
             open_in_new
           </span>
         </a>
 
         <a className="news-item" href="https://affidavit.eci.gov.in/" target="_blank">
-          ECI - Candidate Affidavit Management
+          List of candidates for 2023 elections, Election Commission of India
           <span className="material-icons">
             open_in_new
           </span>

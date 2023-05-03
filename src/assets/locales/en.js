@@ -14,10 +14,11 @@ const enTranslations = {
   bjp: "BJP",
   jds: "JDS",
   aap: "AAP",
-  cn: "Constituency News",
   wv: "Where do I cast my vote",
   scs: "Sources",
-  voter_search: "Search the voter service portal for your EPIC/Mobile number",
+  cm: "Read more about your candidates and local election issues on Citizen Matters",
+  voter_search: "Locate your polling booth with National Voter Service Portal",
+  ai: "Additional Information",
 };
 
 export default enTranslations;
