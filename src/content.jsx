@@ -93,7 +93,7 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
             open_in_new
           </span>
         </a>
-        <a className="news-item" href="https://electoralsearch.eci.gov.in/" target="_blank">
+        <a className="news-item" href="https://electoralsearch.in/" target="_blank">
           <Trans t={t} i18nKey="voter_search" />
           <span className="material-icons">
             open_in_new
