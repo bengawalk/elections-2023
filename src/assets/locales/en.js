@@ -9,7 +9,7 @@ const enTranslations = {
   news: "In the news",
   loc_err: "Unable to get current location. Please try again",
   loc_fetch: "Fetching current location",
-  loc_out: "Your location seems to be outside Bengaluru. Please select the constituency from the dropdown",
+  loc_out: "Your location seems to be outside Bengaluru. Please select a constituency from the dropdown",
   inc: "Congress",
   bjp: "BJP",
   jds: "JDS",
@@ -18,8 +18,6 @@ const enTranslations = {
   wv: "Where do I cast my vote",
   scs: "Sources",
   voter_search: "Search the voter service portal for your EPIC/Mobile number",
-  opencity: "OpenCity portal for population data",
-  eci: "ECI - Candidate Affidavit Management",
 };
 
 export default enTranslations;

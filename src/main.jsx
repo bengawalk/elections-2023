@@ -89,8 +89,9 @@ class MainPage extends React.PureComponent {
       id: "boundaries-fill",
       source: "boundaries",
       type: "fill",
+      filter: ["!=", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#FF0000",
+        "fill-color": "#FFF000",
         "fill-opacity": 0.3,
       },
     });
@@ -101,8 +102,8 @@ class MainPage extends React.PureComponent {
       type: "fill",
       filter: ["==", "AC_CODE", constituency || ""],
       paint: {
-        "fill-color": "#FF0000",
-        "fill-opacity": 1,
+        "fill-color": "#FFAA00",
+        "fill-opacity": 0.7,
       },
     });
 
@@ -123,19 +124,24 @@ class MainPage extends React.PureComponent {
     // window.history.replaceState( {} , '', url );
 
     if(constituency !== prevState.constituency) {
+      this.map.setFilter("boundaries-fill", [
+        "!=",
+        "AC_CODE",
+        constituency || "",
+      ]);
       this.map.setFilter("boundaries-highlighted", [
         "==",
         "AC_CODE",
         constituency || "",
       ]);
 
-      const constituencyData = boundaryData.features.filter(f => f.properties.AC_CODE === constituency);
-      let coordinates = [];
-      constituencyData.forEach(c => {
-        c.geometry.coordinates[0].forEach(([longitude, latitude]) => {
-          coordinates.push({ longitude, latitude });
-        })
-      });
+      // const constituencyData = boundaryData.features.filter(f => f.properties.AC_CODE === constituency);
+      // let coordinates = [];
+      // constituencyData.forEach(c => {
+      //   c.geometry.coordinates[0].forEach(([longitude, latitude]) => {
+      //     coordinates.push({ longitude, latitude });
+      //   })
+      // });
 
       // const bounds = getBounds(coordinates);
       // this.map.fitBounds([
@@ -276,7 +282,7 @@ class MainPage extends React.PureComponent {
               </div>
             )
           }
-          <h2>{t('mla_elec')} 2023</h2>
+          <h2>{t('mla_elec')} <Trans t={t} i18nKey="2023" /></h2>
           <h4><Trans t={t} i18nKey="acb" /></h4>
           <select value={constituency} className="assembly-dropdown" onChange={e => { this.setState({ locationError: false, constituency: e.target.value })}}>
             {

@@ -94,7 +94,6 @@ h2 {
   &:first-child {
     margin-top: 0;
   }
-  //font-weight: 400;
 }
 
 h4 {
@@ -151,10 +150,17 @@ p {
   }
 }
 
-.member-icon {
+.party-icon {
   width: 24px;
   height: 24px;
-  border-radius: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.member-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   margin-right: 8px;
 }
 

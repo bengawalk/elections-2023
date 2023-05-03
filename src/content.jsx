@@ -16,16 +16,16 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
       <h4><Trans t={t} i18nKey="area" /></h4>
       <p>{details.area} <Trans t={t} i18nKey="sqkm" /></p>
 
-      <h2><Trans t={t} i18nKey="smla" />, {details.elec_year} - 2023</h2>
+      <h2><Trans t={t} i18nKey="smla" />, <Trans t={t} i18nKey={details.elec_year} /> - <Trans t={t} i18nKey="2023" /></h2>
       <h4><Trans t={t} i18nKey="Name" /></h4>
-      <div className="flex member">
+      <div className="flex ac member">
         <img className="member-icon" src={`/mla/${constituency}.webp`} alt="" />
         {details[`mla_${lang}`]}
       </div>
 
       <h4><Trans t={t} i18nKey="party" /></h4>
       <div className="flex member">
-        <img className="member-icon" src={PARTY_ICONS[details.mla_party]} alt="" />
+        <img className="party-icon" src={PARTY_ICONS[details.mla_party]} alt="" />
         <Trans t={t} i18nKey={details.mla_party} />
       </div>
 
@@ -46,7 +46,7 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
           return null;
         })
       }
-      <h2>2023 <Trans t={t} i18nKey="Candidates" /></h2>
+      <h2><Trans t={t} i18nKey="2023" /> <Trans t={t} i18nKey="Candidates" /></h2>
       <table className="candidates-table">
         <thead>
         <tr>
@@ -70,7 +70,7 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
               </td>
               <td>
                 <div className="flex ac member">
-                  <img className="member-icon" src={PARTY_ICONS[item.party]} alt="" />
+                  <img className="party-icon" src={PARTY_ICONS[item.party]} alt="" />
                   <Trans t={t} i18nKey={item.party} />
                 </div>
               </td>
@@ -106,14 +106,14 @@ const Content = ({ constituency, details, candidateDetails, lang, t }) => {
       </h2>
       <div className="cons-news">
         <a className="news-item" href="https://data.opencity.in/dataset/karnataka-assembly-elections-2023" target="_blank">
-          <Trans t={t} i18nKey="opencity" />
+          OpenCity portal for population data
           <span className="material-icons">
             open_in_new
           </span>
         </a>
 
         <a className="news-item" href="https://affidavit.eci.gov.in/" target="_blank">
-          <Trans t={t} i18nKey="eci" />
+          ECI - Candidate Affidavit Management
           <span className="material-icons">
             open_in_new
           </span>
