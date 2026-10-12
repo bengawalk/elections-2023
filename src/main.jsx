@@ -1,11 +1,12 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import mapboxgl from "mapbox-gl";
+import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { sortBy as lsortBy, map as lMap } from "lodash";
 
 import ElectionDataRaw from "./assets/data.csv?raw";
 import CandidatesDataRaw from "./assets/candidates.csv?raw";
-import {LANGUAGES, MAPBOX_TOKEN} from "./utils/constants";
+import {LANGUAGES, MAP_STYLE} from "./utils/constants";
 import boundaryData from "./assets/constituencies.json";
 import {csvToJson, isPointInPolygon} from "./utils";
 import Content from "./content";
@@ -14,7 +15,7 @@ import i18n from "i18next";
 
 import "./utils/i18n";
 
-mapboxgl.accessToken = MAPBOX_TOKEN;
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 const ELECTION_DATA = csvToJson(ElectionDataRaw);
 const CANDIDATES_DATA = csvToJson(CandidatesDataRaw);
@@ -57,9 +58,9 @@ class MainPage extends React.PureComponent {
     i18n.changeLanguage(lang);
     this.setState({ lang });
 
-    const mapRef = new mapboxgl.Map({
+    const mapRef = new maplibregl.Map({
       container: this.mapContainer.current,
-      style: "mapbox://styles/mapbox/light-v11",
+      style: MAP_STYLE,
       center: [lng, lat],
       zoom,
       minZoom: 8,
@@ -75,7 +76,7 @@ class MainPage extends React.PureComponent {
 
     const el = document.createElement("div");
     el.className = "user-location-indicator";
-    this.userLocationMarker = new mapboxgl.Marker(el)
+    this.userLocationMarker = new maplibregl.Marker({ element: el })
       .setLngLat({ lat: 0, lng: 0 })
       .addTo(mapRef);
 
@@ -256,7 +257,7 @@ class MainPage extends React.PureComponent {
     return (
       <>
         <div id="constituency-map-wrapper">
-          <div id="constituency-map" className="mapboxgl-map" ref={this.mapContainer} />
+          <div id="constituency-map" className="maplibregl-map" ref={this.mapContainer} />
           <div id="map-actions">
             <button id="map-get-location" onClick={this.getUserLocation}>
                 <span className="material-icons">

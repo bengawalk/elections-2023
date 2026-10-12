@@ -1,4 +1,4 @@
-export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+export const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 
 export const LANGUAGES = [
   {
